@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="60" viewBox="0 0 256 60">
+  <rect x="4" y="9" width="40" height="40" rx="11" fill="#6554C0"/>
+  <path d="M15 35V29H21V23H27V17H33V35Z" fill="#FFFFFF"/>
+  <text x="56" y="30" font-family="Arial, sans-serif" font-size="21" font-weight="600" letter-spacing="-.5" fill="#202842">Career Quest</text>
+  <text x="57" y="47" font-family="Microsoft YaHei, sans-serif" font-size="10.5" letter-spacing="1.2" fill="#667887">职业面试 · 成长训练</text>
+</svg>

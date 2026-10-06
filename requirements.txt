@@ -1,0 +1,7 @@
+# Pin the current Streamlit release and the demo's other direct dependencies.
+streamlit==1.65.0
+openai==2.54.0
+python-docx==1.2.0
+pypdf==6.19.0
+faster-whisper==1.2.1
+ctranslate2==4.8.2

@@ -1,0 +1,19 @@
+name: Check public demo
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  linux-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: python -m pip install -r requirements.txt
+      - run: python -m unittest discover -s tests -v
+      - name: Check installed speech backend
+        run: python -c "from faster_whisper import WhisperModel; print('CPU speech backend imports successfully')"

@@ -1,0 +1,56 @@
+# Career Quest · professional interview workspace
+# Uses Streamlit's native theme, with no external fonts or CSS dependencies.
+[client]
+toolbarMode = "minimal"
+showErrorDetails = "none"
+
+[server]
+headless = true
+maxUploadSize = 10
+enableCORS = true
+enableXsrfProtection = true
+
+[browser]
+gatherUsageStats = false
+
+[theme]
+base = "light"
+primaryColor = "#6554C0"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F5F5FB"
+textColor = "#202842"
+linkColor = "#6554C0"
+borderColor = "#E3E4F0"
+showWidgetBorder = true
+showSidebarBorder = true
+baseRadius = "10px"
+buttonRadius = "8px"
+font = "sans-serif"
+baseFontSize = 15
+baseFontWeight = 400
+headingFontSizes = ["36px", "26px", "20px", "17px", "15px", "13px"]
+headingFontWeights = [600, 600, 600, 600, 500, 500]
+linkUnderline = false
+chartCategoricalColors = ["#6554C0", "#4C7797", "#8495A4", "#BD9353"]
+greenColor = "#2B8465"
+greenBackgroundColor = "#EDF6F1"
+greenTextColor = "#246F56"
+blueColor = "#4C7797"
+grayColor = "#667887"
+redColor = "#B94444"
+dataframeBorderColor = "#E3E4F0"
+dataframeHeaderBackgroundColor = "#F5F5FB"
+
+violetColor = "#6554C0"
+violetBackgroundColor = "#EFEAFB"
+violetTextColor = "#55439F"
+orangeColor = "#B57C30"
+orangeBackgroundColor = "#FFF5E3"
+orangeTextColor = "#885A1D"
+
+[theme.sidebar]
+backgroundColor = "#F5F5FB"
+secondaryBackgroundColor = "#FFFFFF"
+textColor = "#202842"
+primaryColor = "#6554C0"
+borderColor = "#E3E4F0"
