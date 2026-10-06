@@ -4,4 +4,6 @@ openai==2.54.0
 python-docx==1.2.0
 pypdf==6.19.0
 faster-whisper==1.2.1
+# PyAV 19 removed metadata_errors, which faster-whisper 1.2.1 still uses.
+av==18.1.0
 ctranslate2==4.8.2
