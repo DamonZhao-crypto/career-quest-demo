@@ -35,6 +35,7 @@ from speech import SPEECH_MODELS, SpeechInputError, transcribe_recording, vocabu
 import server_settings
 from server_settings import PROVIDERS, public_error, resolve_settings
 from hosting import HostingError, data_dir, public_mode, speech_slot, visitor_id
+from speech_model import SpeechServiceError, load_cpu_model, report_speech_failure
 from ui import (
     STAGE_TITLES,
     navigate,
@@ -104,18 +105,8 @@ def speech_metrics(raw, transcript):
 @st.cache_resource(max_entries=1, show_spinner=False)
 def load_whisper(model_size="small"):
     """Cache one multilingual CPU model, keyed by the chosen size."""
-    from faster_whisper import WhisperModel
-
     model_dir = data_dir() / "models" if public_mode() else Path(__file__).with_name("models")
-    model_dir.mkdir(parents=True, exist_ok=True)
-    if model_size not in ("base", "small"):
-        raise ValueError("不支持的语音模型。")
-    snapshots = model_dir.glob(f"models--Systran--faster-whisper-{model_size}/snapshots/*")
-    for snapshot in snapshots:
-        if all((snapshot / name).is_file() for name in ("model.bin", "config.json", "tokenizer.json")):
-            return WhisperModel(str(snapshot), device="cpu", compute_type="int8", cpu_threads=2, num_workers=1)
-    return WhisperModel(model_size, device="cpu", compute_type="int8",
-                        download_root=str(model_dir), cpu_threads=2, num_workers=1)
+    return load_cpu_model(model_size, model_dir)
 
 
 def start_stage(game, client, model, index):
@@ -429,8 +420,11 @@ with st.container(horizontal_alignment="center"):
                                 st.warning(str(error))
                             except HostingError as error:
                                 st.info(str(error))
-                            except Exception:
-                                st.error("语音模型未能完成识别。首次下载请检查网络与磁盘空间；可切换 base 模式重试，或先输入文字继续挑战。")
+                            except SpeechServiceError as error:
+                                st.error(str(error))
+                            except Exception as error:
+                                report_speech_failure("audio-transcription", error)
+                                st.error("录音未能完成识别，请管理员查看识别日志。可暂时输入文字继续练习。（诊断编号：S05）")
                         transcription = st.session_state.get(f"transcript_{question_key}")
                         if transcription:
                             st.caption("请核对专业术语、数字、人名和‘不 / 没有’等否定词。可回听上方录音，再修改下方文字。")

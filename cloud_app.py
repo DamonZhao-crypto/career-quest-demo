@@ -8,6 +8,12 @@ import streamlit as st
 
 
 os.environ["CAREER_QUEST_PUBLIC"] = "true"
+# Set these before faster-whisper/huggingface_hub is first imported.
+# Plain HTTP downloads avoid the optional Xet native downloader on small hosts.
+os.environ.setdefault("HF_HUB_DISABLE_XET", "1")
+os.environ.setdefault("HF_HUB_DOWNLOAD_TIMEOUT", "60")
+os.environ.setdefault("HF_HUB_ETAG_TIMEOUT", "30")
+os.environ.setdefault("HF_HUB_DISABLE_IMPLICIT_TOKEN", "1")
 os.environ.setdefault("CAREER_QUEST_DATA_DIR", str(Path(__file__).with_name("data")))
 try:
     options = st.secrets.get("hosting", {})
