@@ -68,7 +68,8 @@ class PublicDeploymentTests(unittest.TestCase):
         self.assertFalse(app.error)
         self.assertFalse(any("API" in widget.label or "存档编号" in widget.label for widget in app.text_input))
         self.assertEqual(len(app.session_state["public_visitor_id"]), 64)
-        self.assertEqual(list(app.selectbox(key="speech_mode").options), ["base · 速度优先"])
+        self.assertEqual(app.selectbox(key="speech_mode").value, "base · 速度优先")
+        self.assertIn("small · 清晰优先（推荐）", app.selectbox(key="speech_mode").options)
 
     def test_two_visitors_cannot_see_each_others_history(self):
         alice, bob = self.app().run(), self.app().run()

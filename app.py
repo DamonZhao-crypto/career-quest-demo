@@ -206,11 +206,13 @@ with st.sidebar:
             elif provider == "Ollama 本机免费":
                 st.caption("请先在本机运行：ollama run qwen3:4b")
     with st.expander("语音识别设置", icon=":material/mic:"):
-        available_modes = [label for label, size in SPEECH_MODELS.items()
-                           if not is_public or size == os.environ.get("CAREER_QUEST_WHISPER_MODEL", "base")]
-        speech_mode = st.selectbox("识别模式", available_modes, key="speech_mode")
+        available_modes = list(SPEECH_MODELS)
+        default_speech_model = os.environ.get("CAREER_QUEST_WHISPER_MODEL", "base") if is_public else "small"
+        speech_mode = st.selectbox("识别模式", available_modes, key="speech_mode",
+                                  index=list(SPEECH_MODELS.values()).index(default_speech_model))
         custom_words = st.text_area("专业词汇（可选）", key="speech_words", persist_state="session",
-                                    height=90, max_chars=240, placeholder="例如：Figma、交互原型、Python、项目名称")
+                                    height=90, max_chars=120, placeholder="只填本段确实会说的术语，例如 Python、FastAPI；也可留空",
+                                    help="最多采用 8 个短词。不自动加入岗位或简历技能；词汇提示也可能引入误识别。")
         use_vad = st.checkbox("过滤静音片段", value=True, key="speech_vad")
         st.caption(f"识别在{recognition_location}进行，不需要语音 API Key。small 首次下载约 486 MB，base 约 148 MB；small 更耗时。")
         st.caption("轻声内容被漏掉时，可关闭静音过滤后重试。")
@@ -408,7 +410,7 @@ with st.container(horizontal_alignment="center"):
                                                icon=":material/graphic_eq:", disabled=draft_exists and not replace_draft):
                             try:
                                 with st.spinner("正在识别录音；首次使用需要下载并加载模型…"):
-                                    words = vocabulary_hints(game["job"], game["profile"]["skills"], custom_words)
+                                    words = vocabulary_hints(custom_words)
                                     with speech_slot():
                                         transcription = transcribe_recording(audio.getvalue(), load_whisper(SPEECH_MODELS[speech_mode]),
                                                                             words, use_vad=use_vad)
@@ -427,8 +429,14 @@ with st.container(horizontal_alignment="center"):
                                 st.error("录音未能完成识别，请管理员查看识别日志。可暂时输入文字继续练习。（诊断编号：S05）")
                         transcription = st.session_state.get(f"transcript_{question_key}")
                         if transcription:
+                            for notice in transcription.get("warnings", []):
+                                st.warning(notice)
                             st.caption("请核对专业术语、数字、人名和‘不 / 没有’等否定词。可回听上方录音，再修改下方文字。")
                             with st.expander("查看原始转写与待核对片段", icon=":material/hearing:"):
+                                if transcription.get("retried"):
+                                    st.caption("首次识别结果（供回听对照）")
+                                    st.write(transcription["original_text"])
+                                    st.caption("自动重识别后的当前结果")
                                 st.write(transcription["text"])
                                 for piece in transcription["review"]:
                                     st.write(f"{piece['start']}–{piece['end']} 秒：{piece['text']}")
